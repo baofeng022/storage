@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yango.uc.dao.mapper.DepartmentMapper">
+
+<sql id="selectListByCond">
+select 
+a.id deptId,
+a.dept_name deptName,
+a.dept_type deptType,
+a.dept_no deptNo,
+b.id parentId,
+b.dept_name parentName
+from uc_department a left join uc_department b on a.parent_id = b.id and b.is_valid = '1'
+where a.is_valid = '1'
+</sql>
+
+
+<select id="selectPageByCond" parameterType="java.util.Map" resultType="com.yango.uc.web.vo.DepartmentVo">
+	<include refid="selectListByCond"/> limit ${offset},${limit}
+</select>
+
+<select id="selectCountByCond" parameterType="java.util.Map" resultType="java.lang.Integer">
+select count(1) from (
+ <include refid="selectListByCond"/> 
+) a
+</select>
+
+
+</mapper>

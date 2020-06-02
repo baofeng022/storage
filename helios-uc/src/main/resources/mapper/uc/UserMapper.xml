@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yango.uc.dao.mapper.UserMapper">
+
+<sql id="selectListByCond">
+select 
+a.id 'user_id',
+a.username 'username',
+a.nickname 'nickname',
+a.mobile 'mobile',
+a.job_no 'job_no',
+a.position 'position',
+c.id 'role_id',
+c.role_name 'role_name',
+d.id 'dept_id',
+d.dept_name 'dept_name',
+a.data_permission_type 'data_permission_type',
+e.id 'leader_id',
+e.nickname 'leader_name',
+a.user_no 'user_no',
+a.`status` 'status',
+a.sex,
+a.email
+from uc_user a 
+left join uc_user_role b on a.id = b.user_id and b.is_valid = '1'
+left join uc_role c on c.id = b.role_id and c.is_valid = '1'
+left join uc_department d on d.id = a.dept_id
+left join uc_user e on a.leader_id = e.id
+where a.is_valid = '1'
+<if test="userId != null"> and a.id = #{userId}</if>
+<if test="roleId != null"> and c.id = #{roleId}</if>
+<if test="departmentId != null"> and d.id = #{departmentId}</if>
+order by a.id asc
+</sql>
+
+
+<select id="selectPageByCond" parameterType="java.util.Map" resultType="com.yango.uc.web.vo.UserVo">
+	<include refid="selectListByCond"/> limit ${offset},${limit}
+</select>
+
+<select id="selectCountByCond" parameterType="java.util.Map" resultType="java.lang.Integer">
+select count(1) from (
+ <include refid="selectListByCond"/> 
+) a
+</select>
+
+</mapper>

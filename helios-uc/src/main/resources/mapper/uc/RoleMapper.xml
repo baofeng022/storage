@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yango.uc.dao.mapper.RoleMapper">
+
+
+<sql id="selectListByCond">
+select 
+id roleId,
+role_name roleName,
+role_des roleDes,
+role_no roleNo
+from uc_role a
+where a.is_valid = '1'
+order by a.id asc
+</sql>
+
+<select id="selectPageByCond" parameterType="java.util.Map" resultType="com.yango.uc.web.vo.RoleVo">
+	<include refid="selectListByCond"/> limit ${offset},${limit}
+</select>
+
+<select id="selectCountByCond" parameterType="java.util.Map" resultType="java.lang.Integer">
+select count(1) from (
+ <include refid="selectListByCond"/> 
+) a
+</select>
+
+</mapper>
